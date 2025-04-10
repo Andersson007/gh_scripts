@@ -63,6 +63,14 @@ def get_cli_args():
     return parser.parse_args()
 
 
+def get_repo(g_obj, repo):
+    try:
+        return g_obj.get_repo(repo)
+    except Exception as e:
+        print(f"Error occured with {repo}: {e}")
+        exit(1)
+
+
 def main():
     # Get command-line arguments
     cli_args = get_cli_args()
@@ -74,8 +82,8 @@ def main():
     g = Github(auth=auth)
 
     # Get the src repo
-    src_repo = g.get_repo(cli_args.source_repo)
-    dst_repo = g.get_repo(cli_args.dst_repo)
+    src_repo = get_repo(g, cli_args.source_repo)
+    dst_repo = get_repo(g, cli_args.dst_repo)
 
     # Get the issue
     i_num = int(cli_args.issue_number)
@@ -102,7 +110,6 @@ def main():
             )
         except Exception as e:
             print(f"Exception occured: {e}")
-            g.close()
             exit(1)
 
         print(f"Issue copied: {new_issue.html_url}")
